@@ -1,32 +1,33 @@
-import Container from '../components/container'
-import MoreStories from '../components/more-stories'
-import HeroPost from '../components/hero-post'
-import Intro from '../components/intro'
-import Layout from '../components/layout'
-import { getAllIssues } from '../lib/api'
+import Container from "../components/container";
+import MoreStories from "../components/more-stories";
+import HeroPost from "../components/hero-post";
+import Intro from "../components/intro";
+import Layout from "../components/layout";
+import { getAllIssues } from "../lib/api";
 import {
   ONE_GRAPH_APP_ID,
   ONE_GRAPH_SERVER_SIDE_ACCESS_TOKEN,
-} from '../lib/constants'
-import Head from 'next/head'
+} from "../lib/constants";
+import Head from "next/head";
 import {
   auth,
   destroyAuth,
   saveAuth,
   useAuthGuardian,
   useFetchSupportedServices,
-} from '../lib/oneGraphNextClient'
-import useSWR from 'swr'
+} from "../lib/oneGraphNextClient";
+import { serverSideAuthTokenConfigurationPrompt } from "../lib/metaHelpers";
+import useSWR from "swr";
 
 const submitFeedback = async ({ title, body, emotion }) => {
-  const issue = { title, body, emotion }
-  const result = await fetch('/api/feedback', {
-    method: 'POST',
+  const issue = { title, body, emotion };
+  const result = await fetch("/api/feedback", {
+    method: "POST",
     body: JSON.stringify(issue),
-  })
-  const json = await result.json()
-  return json
-}
+  });
+  const json = await result.json();
+  return json;
+};
 
 const submitStatusMessages = {
   idle: (
@@ -34,19 +35,19 @@ const submitStatusMessages = {
       What do <em>you</em> think of Next.js and AuthGuardian?
     </>
   ),
-  loading: 'Submitting...',
-  success: 'Submitted, thank you!',
+  loading: "Submitting...",
+  success: "Submitted, thank you!",
   error: serverSideAuthTokenConfigurationPrompt(ONE_GRAPH_APP_ID),
-}
+};
 
 export default function Index() {
-  const [submitStatus, setSubmitStatus] = React.useState('idle')
+  const [submitStatus, setSubmitStatus] = React.useState("idle");
 
   const [feedback, setFeedback] = React.useState({
-    title: '',
-    body: '',
-    emotion: 'neutral',
-  })
+    title: "",
+    body: "",
+    emotion: "neutral",
+  });
 
   return (
     <>
@@ -64,10 +65,10 @@ export default function Index() {
               type="text"
               defaultValue={feedback.title}
               onChange={(event) => {
-                const title = event.target.value
+                const title = event.target.value;
                 setFeedback((oldFeedback) => {
-                  return { ...oldFeedback, title: title }
-                })
+                  return { ...oldFeedback, title: title };
+                });
               }}
             />
           </label>
@@ -79,10 +80,10 @@ export default function Index() {
               rows={4}
               defaultValue={feedback.body}
               onChange={(event) => {
-                const body = event.target.value
+                const body = event.target.value;
                 setFeedback((oldFeedback) => {
-                  return { ...oldFeedback, body: body }
-                })
+                  return { ...oldFeedback, body: body };
+                });
               }}
             ></textarea>
           </label>
@@ -91,10 +92,10 @@ export default function Index() {
             <select
               value={feedback.emotion}
               onChange={(event) => {
-                const emotion = event.target.value
+                const emotion = event.target.value;
                 setFeedback((oldFeedback) => {
-                  return { ...oldFeedback, emotion: emotion }
-                })
+                  return { ...oldFeedback, emotion: emotion };
+                });
               }}
             >
               <option value="meh">Meh</option>
@@ -105,13 +106,13 @@ export default function Index() {
           </label>
           <button
             onClick={async () => {
-              setSubmitStatus('loading')
-              const result = await submitFeedback(feedback)
-              const newStatus = result.success ? 'success' : 'error'
-              setSubmitStatus(newStatus)
+              setSubmitStatus("loading");
+              const result = await submitFeedback(feedback);
+              const newStatus = result.success ? "success" : "error";
+              setSubmitStatus(newStatus);
             }}
           >
-            Submit{' '}
+            Submit{" "}
           </button>
         </Container>
       </Layout>
@@ -270,11 +271,11 @@ export default function Index() {
         }
       `}</style>
     </>
-  )
+  );
 }
 
 export async function getStaticProps() {
   return {
     props: {},
-  }
+  };
 }
